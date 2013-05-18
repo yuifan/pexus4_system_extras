@@ -116,7 +116,13 @@ int pm_process_pagemap_range(pm_process_t *proc,
         return error;
     }
     error = read(proc->pagemap_fd, (char*)range, numpages * sizeof(uint64_t));
-    if (error < numpages * sizeof(uint64_t)) {
+    if (error == 0) {
+        /* EOF, mapping is not in userspace mapping range (probably vectors) */
+        *len = 0;
+        free(range);
+        *range_out = NULL;
+        return 0;
+    } else if (error < 0 || (error > 0 && error < (int)(numpages * sizeof(uint64_t)))) {
         error = (error < 0) ? errno : -1;
         free(range);
         return error;
@@ -204,7 +210,7 @@ int pm_process_destroy(pm_process_t *proc) {
 }
 
 #define INITIAL_MAPS 10
-#define MAX_LINE 256
+#define MAX_LINE 1024
 #define MAX_PERMS 5
 
 /* 

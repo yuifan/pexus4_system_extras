@@ -17,11 +17,19 @@
 #ifndef _MAKE_EXT4FS_H_
 #define _MAKE_EXT4FS_H_
 
-#include "ext4_utils.h"
-#include "ext4.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-void reset_ext4fs_info();
-int make_ext4fs(const char *filename, const char *directory,
-                char *mountpoint, int android, int gzip, int sparse);
+struct selabel_handle;
+
+int make_ext4fs(const char *filename, long long len,
+                const char *mountpoint, struct selabel_handle *sehnd);
+int make_ext4fs_sparse_fd(int fd, long long len,
+                const char *mountpoint, struct selabel_handle *sehnd);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
+#ifndef _ALLOCATE_H_
+#define _ALLOCATE_H_
+
 #define EXT4_ALLOCATE_FAILED (u32)(~0)
 
 #include "ext4_utils.h"
 #include "ext4.h"
+#include "xattr.h"
 
 struct block_allocation;
 
@@ -28,6 +32,7 @@ struct block_allocation *allocate_blocks(u32 len);
 int block_allocation_num_regions(struct block_allocation *alloc);
 int block_allocation_len(struct block_allocation *alloc);
 struct ext4_inode *get_inode(u32 inode);
+struct ext4_xattr_header *get_xattr_block_for_inode(struct ext4_inode *inode);
 void reduce_allocation(struct block_allocation *alloc, u32 len);
 u32 get_block(struct block_allocation *alloc, u32 block);
 u32 get_oob_block(struct block_allocation *alloc, u32 block);
@@ -38,6 +43,8 @@ u32 get_free_inodes(u32 bg);
 u32 reserve_inodes(int bg, u32 inodes);
 void add_directory(u32 inode);
 u16 get_directories(int bg);
+u16 get_bg_flags(int bg);
+void init_unused_inode_tables(void);
 u32 allocate_inode();
 void free_alloc(struct block_allocation *alloc);
 int reserve_oob_blocks(struct block_allocation *alloc, int blocks);
@@ -49,3 +56,5 @@ void append_region(struct block_allocation *alloc,
 	u32 block, u32 len, int bg);
 struct block_allocation *create_allocation();
 int append_oob_allocation(struct block_allocation *alloc, u32 len);
+
+#endif

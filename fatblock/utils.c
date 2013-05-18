@@ -14,5 +14,29 @@
  * limitations under the License.
  */
 
-u32 sparse_crc32(u32 crc, const void *buf, size_t size);
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
+#include "utils.h"
+
+void strpadcpy(char *d, const char *s, char p, size_t l)
+{
+	while (*s && l-- > 0)
+		*d++ = *s++;
+
+	while (l-- > 0)
+		*d++ = ' ';
+}
+
+void warn(char *msg)
+{
+	fprintf(stderr, "%s", msg);
+}
+
+void die(char *msg)
+{
+	fprintf(stderr, "%s", msg);
+	exit(EXIT_FAILURE);
+}
